@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    
+    <script>
+        //CSVファイルを読み込む関数getCSV()の定義
+        function getCSV() {
+            var req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
+            req.open("get", "export.csv", true); // アクセスするファイルを指定
+            req.send(null); // HTTPリクエストの発行
+
+            // レスポンスが返ってきたらconvertCSVtoArray()を呼ぶ	
+            req.onload = function () {
+                convertCSVtoArray(req.responseText); // 渡されるのは読み込んだCSVデータ
+            }
+        }
+
+        // 読み込んだCSVデータを二次元配列に変換する関数convertCSVtoArray()の定義
+        function convertCSVtoArray(str) { // 読み込んだCSVデータが文字列として渡される
+            var result = []; // 最終的な二次元配列を入れるための配列
+            var tmp = str.split("\n"); // 改行を区切り文字として行を要素とした配列を生成
+
+            // 各行ごとにカンマで区切った文字列を要素とした二次元配列を生成
+            for (var i = 0; i < tmp.length; ++i) {
+                result[i] = tmp[i].split(',');
+            }
+
+            alert(result[1][2]); // 300yen
+        }
+
+        getCSV(); //最初に実行される
+    </script>
+</head>
+<body>
+    <!-- As a heading -->
+    <nav class="navbar navbar-light bg-light sticky-top">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Navbar</span>
+        </div>
+    </nav>
+</body>
+</html>
