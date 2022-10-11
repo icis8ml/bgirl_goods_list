@@ -17,6 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+    <script src="emmet.min.js"></script>
     <script>
         var result = []; // 最終的な二次元配列を入れるための配列
 
@@ -46,75 +47,74 @@
             var ul = document.createElement("ul");
             ul.className = "list-group";
             var li;
+            var beforestep1, beforestep2, beforestep3;
             var step1, step2, step3;
+            var step1cnt = step2cnt = step3cnt = 0;
+            var myTemplate;
+            var loopstartflg = 0;
 
-            result.forEach((result2, i) => {
-                if(result2[0] != null && result2[1] != null){
-                    if (result2[0] || result2[1] || result2[2]) {
-                        body[0].appendChild(ul);
-                        ul = document.createElement("ul");
-                        ul.className = "list-group";
-                    }
-
-                    if (result2[0] != step1) {
-                        if (step1 == undefined || (step1 != result2[0] && result2[0] != "")) {
-                            var span = document.createElement("span");
-                            span.className = "navbar-brand mb-0 h1";
-                            span.innerText = "配布箇所：" + result2[0];
-                            var div = document.createElement("div");
-                            div.className = "container-fluid";
-                            div.appendChild(span);
-                            var nav = document.createElement("nav");
-                            nav.className = "navbar navbar-light bg-light sticky-top";
-                            nav.appendChild(div);
-                            body[0].appendChild(nav);
-                        }
-                        step1 = result2[0];
-                    }
-
-                    if (result2[1] != step2) {
-                        if (step2 == undefined || (step2 != result2[1] && result2[1] != undefined)) {
-                            var span = document.createElement("span");
-                            span.className = "navbar-brand mb-0 h1";
-                            span.innerText = "カテゴリー名：" + result2[1];
-                            var div = document.createElement("div");
-                            div.className = "container-fluid";
-                            div.appendChild(span);
-                            var nav = document.createElement("nav");
-                            nav.className = "navbar navbar-light bg-light sticky-top header-2";
-                            nav.appendChild(div);
-                            if(result2[1] != ""){
-                                body[0].appendChild(nav);
-                            }
-                        }
-                        step2 = result2[1];
-                    }
-
-                    if (result2[2] != step3) {
-                        if (step3 == undefined || (step3 != result2[2] && result2[2] != undefined)) {
-                            var span = document.createElement("span");
-                            span.className = "navbar-brand mb-0 h1";
-                            span.innerText = "アイテム名：" + result2[2];
-                            var div = document.createElement("div");
-                            div.className = "container-fluid";
-                            div.appendChild(span);
-                            var nav = document.createElement("nav");
-                            nav.className = "navbar navbar-light bg-light sticky-top header-3";
-                            nav.appendChild(div);
-                            if (result2[2] != "") {
-                                body[0].appendChild(nav);
-                            }
-                        }
-                        step3 = result2[2];
-                    }
-                    var li = document.createElement("li");
+            result.forEach((result2, i) => {                
+                if (loopstartflg == 0) {
+                    li = document.createElement("li");
                     li.className = "list-group-item";
                     li.innerText = result2[3];
                     ul.appendChild(li);
+                    step3 = result2[2];
+                    loopstartflg++;
+                } else {
+                    if (step3 != result2[2]) {
+                        document.body.appendChild(myTemplate(ul.outerHTML));
+                        ul = document.createElement("ul");
+                        ul.className = "list-group";
 
-
+                        beforestep3 = step3;
+                        step3 = result2[2];
+                        step3cnt++;
+                    }
+                    li = document.createElement("li");
+                    li.className = "list-group-item";
+                    li.innerText = result2[3];
+                    ul.appendChild(li);
                 }
-                body[0].appendChild(ul);
+                myTemplate = Emmet.template("div.accordion(div.accordion-item>(h2.accordion-header>button.collapsed.accordion-button(type='button',data-bs-toggle='collapse', aria-expanded='false',data-bs-target='#collapse" + step1cnt + "-" + step2cnt + "-" + step3cnt + "'){" + result2[2] + "}^(div.accordion-collapse.collapse#collapse" + step1cnt + "-" + step2cnt + "-" + step3cnt + ">div.accordion-body){{0}})");
+
+                if (result2 == false || (result2[0] == step1 && result2[1] == step2 && result2[2] == step3)) {
+                    return;
+                }
+                
+                if (step1 == undefined || (step1 != result2[0])) {
+                    span = document.createElement("span");
+                    span.className = "navbar-brand mb-0 h1";
+                    span.innerText = "配布箇所：" + result2[0];
+                    div = document.createElement("div");
+                    div.className = "container-fluid";
+                    div.appendChild(span);
+                    nav = document.createElement("nav");
+                    nav.className = "navbar navbar-light bg-light sticky-top";
+                    nav.appendChild(div);
+                    body[0].appendChild(nav);
+                    beforestep1 = step1;
+                    step1 = result2[0];
+                    step1cnt++;
+                    step2cnt = step3cnt = 0;
+                }
+
+                if (step2 == undefined || beforestep1 != result2[0] || beforestep2 != result2[1]) {
+                    span = document.createElement("span");
+                    span.className = "navbar-brand mb-0 h1";
+                    span.innerText = "カテゴリー名：" + result2[1];
+                    div = document.createElement("div");
+                    div.className = "container-fluid";
+                    div.appendChild(span);
+                    nav = document.createElement("nav");
+                    nav.className = "navbar navbar-light bg-light sticky-top header-2";
+                    nav.appendChild(div);
+                    body[0].appendChild(nav);
+                    beforestep2 = step2;
+                    step2 = result2[1];
+                    step2cnt++;
+                    step3cnt = 0;
+                }
             });
 
         }
