@@ -127,25 +127,67 @@
             });
 
             const jumpbtns = document.getElementsByClassName("jumpbtn");
+            var firstjumpbtn = 1;
             for (let i = 0; i < jumpbtns.length; i++) {
-                jumpbtns[i].addEventListener('click', ()=>{
-                    navbarbtn = document.getElementsByClassName('navbar-toggler')[0];
-                    navbarbtn.click();
-                });
+                if (firstjumpbtn) {
+                    firstjumpbtn = 0;
+                    jumpbtns[i].addEventListener('click', (e) => {
+                        e.preventDefault();
+
+                        navbarbtn = document.getElementsByClassName('navbar-toggler')[0];
+                        navbarbtn.click();
+
+                        let target = e.target.getAttribute('href').replace('#', '');
+                        let targetElement = document.getElementById(target);
+
+                        window.scrollTo({
+                            behavior: 'smooth',
+                            top: 0
+                        });
+
+                        // URLにアンカーリンクを付加させない
+                        return false;
+                    });
+                } else {
+                    jumpbtns[i].addEventListener('click', (e) => {
+                        e.preventDefault();
+
+                        navbarbtn = document.getElementsByClassName('navbar-toggler')[0];
+                        navbarbtn.click();
+
+                        let target = e.target.getAttribute('href').replace('#', '');
+                        let targetElement = document.getElementById(target);
+
+                        window.scrollTo({
+                            behavior: 'instant',
+                            top: 0
+                        });
+
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: "start"
+                        });
+
+                        // URLにアンカーリンクを付加させない
+                        return false;
+                    });
+                }
             }
+
+            const pagetopbtn = document.getElementById('pagetop');
+            pagetopbtn.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                window.scrollTo({
+                    behavior: 'smooth',
+                    top: 0
+                });
+                // URLにアンカーリンクを付加させない
+                return false;
+            });
         }
 
         getCSV(); //最初に実行される
-
-        // document.querySelector('.jumpbtn').forEach(()=>{
-        //     this.addEventListener('click', ()=>{
-        //         // Do whatever you want
-        //         navbarbtn = document.getElementsByClassName('navbar-toggler')[0];
-        //         navbarbtn.click();
-        //         console.log('A');
-        //     });
-        // });
-
     </script>
     <style>
         .navbar-brand{
